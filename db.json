@@ -1,0 +1,73 @@
+{
+  "incidents": [
+    {
+      "id": "1",
+      "title": "Core Router Flapping",
+      "category": "Network",
+      "priority": "High",
+      "resolutionTime": 2,
+      "description": "Primary core router experiencing intermittent packet loss.",
+      "createdAt": "2025-08-04T09:50:00Z"
+    },
+    {
+      "id": "2",
+      "title": "Database High Latency",
+      "category": "Database",
+      "priority": "Medium",
+      "resolutionTime": 8,
+      "description": "Increased query latency on customer database.",
+      "createdAt": "2025-08-04T10:00:00Z"
+    },
+    {
+      "id": "3",
+      "title": "Payment Gateway API Failure",
+      "category": "API",
+      "priority": "High",
+      "resolutionTime": 1,
+      "description": "Third-party payment API returning 500 errors.",
+      "createdAt": "2025-08-04T10:05:00Z"
+    }
+  ],
+  "metrics": [
+    {
+      "id": "m1",
+      "cpuUsage": 22,
+      "memoryUsage": 48,
+      "diskIO": 11,
+      "latency": 120,
+      "timestamp": "2025-08-04T09:45:00Z"
+    },
+    {
+      "id": "m2",
+      "cpuUsage": 24,
+      "memoryUsage": 50,
+      "diskIO": 12,
+      "latency": 115,
+      "timestamp": "2025-08-04T09:50:00Z"
+    },
+    {
+      "id": "m3",
+      "cpuUsage": 26,
+      "memoryUsage": 52,
+      "diskIO": 13,
+      "latency": 110,
+      "timestamp": "2025-08-04T09:55:00Z"
+    },
+    {
+      "id": "m4",
+      "cpuUsage": 28,
+      "memoryUsage": 55,
+      "diskIO": 14,
+      "latency": 105,
+      "timestamp": "2025-08-04T10:00:00Z"
+    },
+    {
+      "id": "m5",
+      "cpuUsage": 30,
+      "memoryUsage": 57,
+      "diskIO": 15,
+      "latency": 100,
+      "timestamp": "2025-08-04T10:05:00Z"
+    }
+  ]
+}
