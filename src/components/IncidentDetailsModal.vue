@@ -1,5 +1,5 @@
 <script setup>
-import { defineProps, defineEmits, watch } from 'vue';
+import { watch } from 'vue';
 import { useAiStore } from '@/stores/ai';
 import { storeToRefs } from 'pinia';
 import { X, LoaderCircle, AlertTriangle } from 'lucide-vue-next';

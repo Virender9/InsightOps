@@ -1,5 +1,5 @@
 <script setup>
-import { defineProps } from 'vue';
+// defineProps is now a built-in compiler macro
 
 defineProps({
   title: String,
