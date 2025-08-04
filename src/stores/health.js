@@ -1,9 +1,53 @@
 import { defineStore } from 'pinia';
 import axios from 'axios';
 
-// IMPORTANT: Replace with your actual Mockfast API endpoint for health metrics
-const MOCKFAST_API_URL = 'http://localhost:4000/metrics';
-// const MOCKFAST_API_URL = 'https://mockfast.io/backend/apitemplate/get/8BE4BTI4RW';
+// API Configuration - using Mockfast API for deployment
+// const MOCKFAST_API_URL = 'http://localhost:4000/metrics'; // Local development only
+const MOCKFAST_API_URL = 'https://mockfast.io/backend/apitemplate/get/8BE4BTI4RW'; // Production mock API
+
+// Embedded mock data for deployment
+const EMBEDDED_METRICS = [
+  {
+    "id": "m1",
+    "cpuUsage": 22,
+    "memoryUsage": 48,
+    "diskIO": 11,
+    "latency": 120,
+    "timestamp": "2025-08-04T09:45:00Z"
+  },
+  {
+    "id": "m2",
+    "cpuUsage": 24,
+    "memoryUsage": 50,
+    "diskIO": 12,
+    "latency": 115,
+    "timestamp": "2025-08-04T09:50:00Z"
+  },
+  {
+    "id": "m3",
+    "cpuUsage": 26,
+    "memoryUsage": 52,
+    "diskIO": 13,
+    "latency": 110,
+    "timestamp": "2025-08-04T09:55:00Z"
+  },
+  {
+    "id": "m4",
+    "cpuUsage": 28,
+    "memoryUsage": 55,
+    "diskIO": 14,
+    "latency": 105,
+    "timestamp": "2025-08-04T10:00:00Z"
+  },
+  {
+    "id": "m5",
+    "cpuUsage": 30,
+    "memoryUsage": 57,
+    "diskIO": 15,
+    "latency": 100,
+    "timestamp": "2025-08-04T10:05:00Z"
+  }
+];
 
 export const useHealthStore = defineStore('health', {
   state: () => ({
@@ -24,7 +68,7 @@ export const useHealthStore = defineStore('health', {
       this.loading = true;
       this.error = null;
       try {
-        // Fetch from local json-server - get all metrics for historical analysis
+        // Try to fetch from Mockfast API for deployment
         const response = await axios.get(MOCKFAST_API_URL);
         console.log('📈 All metrics fetched from API:', response.data);
         
@@ -40,8 +84,14 @@ export const useHealthStore = defineStore('health', {
         }
 
       } catch (error) {
-        this.error = 'Failed to fetch system health metrics.';
-        console.error('Error fetching health metrics:', error);
+        // Fall back to embedded data for deployment
+        console.log('📈 Using embedded demo data for deployment');
+        if (Array.isArray(EMBEDDED_METRICS) && EMBEDDED_METRICS.length > 0) {
+          this.metricsHistory = EMBEDDED_METRICS;
+          this.metrics = EMBEDDED_METRICS[EMBEDDED_METRICS.length - 1];
+          console.log('📈 Embedded metrics loaded:', this.metrics);
+          console.log('📈 Historical data points:', EMBEDDED_METRICS.length);
+        }
       } finally {
         this.loading = false;
       }
