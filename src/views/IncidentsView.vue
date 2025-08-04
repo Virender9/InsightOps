@@ -2,7 +2,7 @@
 import { onMounted, ref, computed } from 'vue';
 import { useIncidentsStore } from '@/stores/incidents';
 import { storeToRefs } from 'pinia';
-import { LoaderCircle, AlertTriangle, ShieldAlert, FileText, Clock, Zap } from 'lucide-vue-next';
+import { LoaderCircle, AlertTriangle, ShieldAlert, FileText, Clock, Zap, Tag, Eye, AlertCircle, Info } from 'lucide-vue-next';
 import IncidentChart from '@/components/IncidentChart.vue';
 import IncidentDetailsModal from '@/components/IncidentDetailsModal.vue';
 
@@ -32,6 +32,68 @@ const openModal = (incident) => {
 const closeModal = () => {
   isModalVisible.value = false;
   selectedIncident.value = null;
+};
+
+const getPriorityIcon = (priority) => {
+  switch (priority?.toLowerCase()) {
+    case 'critical':
+      return 'AlertTriangle';
+    case 'high':
+      return 'ShieldAlert';
+    case 'medium':
+      return 'AlertCircle';
+    default:
+      return 'Info';
+  }
+};
+
+const getPriorityColor = (priority) => {
+  const colors = {
+    critical: {
+      bg: 'bg-red-50',
+      text: 'text-red-800',
+      border: 'border-red-200',
+      icon: 'text-red-500',
+    },
+    high: {
+      bg: 'bg-orange-50',
+      text: 'text-orange-800',
+      border: 'border-orange-200',
+      icon: 'text-orange-500',
+    },
+    medium: {
+      bg: 'bg-yellow-50',
+      text: 'text-yellow-800',
+      border: 'border-yellow-200',
+      icon: 'text-yellow-500',
+    },
+    low: {
+      bg: 'bg-blue-50',
+      text: 'text-blue-800',
+      border: 'border-blue-200',
+      icon: 'text-blue-500',
+    },
+    default: {
+      bg: 'bg-gray-50',
+      text: 'text-gray-800',
+      border: 'border-gray-200',
+      icon: 'text-gray-500',
+    },
+  };
+  return colors[priority?.toLowerCase()] || colors.default;
+};
+
+const formatTimeAgo = (dateString) => {
+  const date = new Date(dateString);
+  const now = new Date();
+  const diffInSeconds = Math.floor((now - date) / 1000);
+  
+  if (diffInSeconds < 60) return 'Just now';
+  if (diffInSeconds < 3600) return `${Math.floor(diffInSeconds / 60)}m ago`;
+  if (diffInSeconds < 86400) return `${Math.floor(diffInSeconds / 3600)}h ago`;
+  if (diffInSeconds < 2592000) return `${Math.floor(diffInSeconds / 86400)}d ago`;
+  if (diffInSeconds < 31536000) return `${Math.floor(diffInSeconds / 2592000)}mo ago`;
+  return `${Math.floor(diffInSeconds / 31536000)}y ago`;
 };
 
 const filteredIncidents = computed(() => {
