@@ -28,6 +28,64 @@
       "createdAt": "2025-08-04T10:05:00Z"
     }
   ],
+  "alerts": [
+    {
+      "id": "a1",
+      "type": "temperature",
+      "severity": "critical",
+      "source": "FridgeUnit-01",
+      "message": "Temperature threshold exceeded: 12°C",
+      "value": 12.5,
+      "threshold": 8.0,
+      "timestamp": "2025-08-04T22:30:00Z",
+      "status": "active",
+      "location": "Server Room A"
+    },
+    {
+      "id": "a2",
+      "type": "server",
+      "severity": "warning",
+      "source": "WebServer-03",
+      "message": "High CPU usage detected",
+      "value": 85.2,
+      "threshold": 80.0,
+      "timestamp": "2025-08-04T22:25:00Z",
+      "status": "active",
+      "metadata": {
+        "cpu": 85.2,
+        "memory": 72.1,
+        "disk": 45.3
+      }
+    },
+    {
+      "id": "a3",
+      "type": "network",
+      "severity": "warning",
+      "source": "Router-Main",
+      "message": "High network latency detected",
+      "value": 250,
+      "threshold": 200,
+      "timestamp": "2025-08-04T22:20:00Z",
+      "status": "resolved",
+      "metadata": {
+        "latency": 250,
+        "packetLoss": 2.1,
+        "bandwidth": 87.5
+      }
+    },
+    {
+      "id": "a4",
+      "type": "temperature",
+      "severity": "warning",
+      "source": "FridgeUnit-02",
+      "message": "Temperature approaching threshold: 7.5°C",
+      "value": 7.5,
+      "threshold": 8.0,
+      "timestamp": "2025-08-04T22:15:00Z",
+      "status": "active",
+      "location": "Server Room B"
+    }
+  ],
   "metrics": [
     {
       "id": "m1",
@@ -47,27 +105,178 @@
     },
     {
       "id": "m3",
-      "cpuUsage": 26,
-      "memoryUsage": 52,
-      "diskIO": 13,
-      "latency": 110,
-      "timestamp": "2025-08-04T09:55:00Z"
+      "cpuUsage": 85.2,
+      "memoryUsage": 72.1,
+      "diskIO": 45.3,
+      "latency": 250,
+      "timestamp": "2025-08-04T22:25:00Z",
+      "server": "WebServer-03"
+    }
+  ],
+  "temperatureData": [
+    {
+      "id": "t1",
+      "fridgeId": "FridgeUnit-01",
+      "temperature": 12.5,
+      "humidity": 65.2,
+      "timestamp": "2025-08-04T22:30:00Z",
+      "location": "Server Room A",
+      "status": "alarm"
     },
     {
-      "id": "m4",
-      "cpuUsage": 28,
-      "memoryUsage": 55,
-      "diskIO": 14,
-      "latency": 105,
-      "timestamp": "2025-08-04T10:00:00Z"
+      "id": "t2",
+      "fridgeId": "FridgeUnit-02",
+      "temperature": 7.5,
+      "humidity": 58.1,
+      "timestamp": "2025-08-04T22:30:00Z",
+      "location": "Server Room B",
+      "status": "warning"
     },
     {
-      "id": "m5",
-      "cpuUsage": 30,
-      "memoryUsage": 57,
-      "diskIO": 15,
-      "latency": 100,
-      "timestamp": "2025-08-04T10:05:00Z"
+      "id": "t3",
+      "fridgeId": "FridgeUnit-03",
+      "temperature": 5.2,
+      "humidity": 62.3,
+      "timestamp": "2025-08-04T22:30:00Z",
+      "location": "Data Center",
+      "status": "normal"
+    }
+  ],
+  "rcaFlows": [
+    {
+      "id": "rca1",
+      "incidentId": "a2",
+      "title": "High CPU Usage Analysis",
+      "status": "completed",
+      "confidence": 0.89,
+      "rootCause": "Memory leak in application thread pool",
+      "timeline": [
+        {
+          "timestamp": "2025-08-04T22:00:00Z",
+          "event": "Application deployment v2.3.1",
+          "impact": "baseline"
+        },
+        {
+          "timestamp": "2025-08-04T22:10:00Z",
+          "event": "Memory usage spike detected",
+          "impact": "medium"
+        },
+        {
+          "timestamp": "2025-08-04T22:20:00Z",
+          "event": "CPU usage threshold breached",
+          "impact": "high"
+        },
+        {
+          "timestamp": "2025-08-04T22:25:00Z",
+          "event": "Alert triggered",
+          "impact": "critical"
+        }
+      ],
+      "correlatedEvents": [
+        "deployment-v2.3.1",
+        "memory-spike-webserver03",
+        "thread-pool-exhaustion"
+      ],
+      "recommendations": [
+        "Rollback to version 2.3.0",
+        "Investigate thread pool configuration",
+        "Implement memory monitoring"
+      ],
+      "createdAt": "2025-08-04T22:25:30Z"
+    },
+    {
+      "id": "rca2",
+      "incidentId": "a1",
+      "title": "Fridge Temperature Anomaly",
+      "status": "in_progress",
+      "confidence": 0.72,
+      "rootCause": "Cooling system malfunction",
+      "timeline": [
+        {
+          "timestamp": "2025-08-04T21:45:00Z",
+          "event": "Temperature gradual increase",
+          "impact": "low"
+        },
+        {
+          "timestamp": "2025-08-04T22:15:00Z",
+          "event": "Cooling system reduced efficiency",
+          "impact": "medium"
+        },
+        {
+          "timestamp": "2025-08-04T22:30:00Z",
+          "event": "Critical temperature threshold exceeded",
+          "impact": "critical"
+        }
+      ],
+      "correlatedEvents": [
+        "power-fluctuation-room-a",
+        "hvac-maintenance-delayed",
+        "sensor-calibration-overdue"
+      ],
+      "recommendations": [
+        "Immediate cooling system inspection",
+        "Check power supply stability",
+        "Verify sensor calibration"
+      ],
+      "createdAt": "2025-08-04T22:30:15Z"
+    }
+  ],
+  "aiSummaries": [
+    {
+      "id": "ai1",
+      "rcaFlowId": "rca1",
+      "summary": "Analysis indicates a memory leak in the thread pool management system introduced in deployment v2.3.1. The leak causes gradual memory consumption increase, leading to garbage collection pressure and subsequent CPU spikes. Correlation with deployment timing shows 89% confidence. Immediate rollback recommended to prevent service degradation.",
+      "keyInsights": [
+        "Memory leak pattern matches known thread pool issues",
+        "Timeline correlation with deployment is significant",
+        "Similar patterns observed in staging environment"
+      ],
+      "severity": "high",
+      "generatedAt": "2025-08-04T22:26:00Z",
+      "model": "gpt-4-turbo",
+      "tokens": 342
+    },
+    {
+      "id": "ai2",
+      "rcaFlowId": "rca2",
+      "summary": "Temperature anomaly in FridgeUnit-01 shows characteristics consistent with cooling system degradation. Environmental factors include recent power fluctuations and delayed HVAC maintenance. Sensor data integrity appears intact based on cross-reference with adjacent units. Immediate physical inspection of cooling components recommended.",
+      "keyInsights": [
+        "Power fluctuation correlation detected",
+        "Maintenance schedule deviation identified",
+        "Temperature gradient analysis suggests localized issue"
+      ],
+      "severity": "critical",
+      "generatedAt": "2025-08-04T22:31:00Z",
+      "model": "gpt-4-turbo",
+      "tokens": 278
+    }
+  ],
+  "anomalies": [
+    {
+      "id": "ano1",
+      "type": "statistical",
+      "metric": "cpu_usage",
+      "source": "WebServer-03",
+      "anomalyScore": 0.89,
+      "expectedValue": 25.3,
+      "actualValue": 85.2,
+      "deviation": 59.9,
+      "detectionMethod": "z_score",
+      "threshold": 3.0,
+      "timestamp": "2025-08-04T22:25:00Z"
+    },
+    {
+      "id": "ano2",
+      "type": "pattern",
+      "metric": "temperature",
+      "source": "FridgeUnit-01",
+      "anomalyScore": 0.76,
+      "expectedValue": 4.5,
+      "actualValue": 12.5,
+      "deviation": 8.0,
+      "detectionMethod": "lstm_autoencoder",
+      "threshold": 0.7,
+      "timestamp": "2025-08-04T22:30:00Z"
     }
   ]
 }

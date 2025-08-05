@@ -1,13 +1,22 @@
 {
-  "name": "insightops",
-  "version": "0.0.0",
+  "name": "insightops-enterprise",
+  "version": "2.0.0",
   "private": true,
   "type": "module",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
-    "mock-api": "json-server --watch db.json --port 4000"
+    "dev:enterprise": "vite --port 5173",
+    "mock-api": "json-server --watch db.json --port 4000",
+    "dev:with-mock": "concurrently \"npm run mock-api\" \"npm run dev\"",
+    "build:production": "NODE_ENV=production npm run build",
+    "build:docker": "docker build -t insightops-enterprise .",
+    "start:docker": "docker-compose up -d",
+    "stop:docker": "docker-compose down",
+    "logs:docker": "docker-compose logs -f",
+    "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs --fix --ignore-path .gitignore",
+    "format": "prettier --write src/"
   },
   "dependencies": {
     "axios": "^1.11.0",
@@ -25,6 +34,7 @@
   "devDependencies": {
     "@vitejs/plugin-vue": "^6.0.1",
     "autoprefixer": "^10.4.19",
+    "concurrently": "^9.2.0",
     "postcss": "^8.4.38",
     "tailwindcss": "^3.4.3",
     "vite": "^5.2.8"

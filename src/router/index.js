@@ -1,5 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import HomeView from '../views/HomeView.vue'
+import Dashboard from '../views/Dashboard.vue'
+import SimpleAIOperations from '../views/SimpleAIOperations_working.vue'
+import IntelligentInsights from '../views/IntelligentInsights.vue'
 import IncidentsView from '../views/IncidentsView.vue'
 import HealthView from '../views/HealthView.vue'
 import ReportsView from '../views/ReportsView.vue'
@@ -11,8 +13,18 @@ const router = createRouter({
   routes: [
     {
       path: '/',
-      name: 'home',
-      component: HomeView
+      name: 'dashboard',
+      component: Dashboard
+    },
+    {
+      path: '/ai-ops',
+      name: 'ai-operations',
+      component: SimpleAIOperations
+    },
+    {
+      path: '/insights',
+      name: 'intelligent-insights',
+      component: IntelligentInsights
     },
     {
       path: '/incidents',
@@ -38,7 +50,7 @@ const router = createRouter({
       path: '/support',
       name: 'support',
       component: SupportView
-    },
+    }
   ]
 })
 

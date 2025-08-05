@@ -98,18 +98,30 @@ export const useHealthStore = defineStore('health', {
     },
     
     startAutoRefresh() {
-      // Auto-refresh every 30 seconds
+      if (this.autoRefresh) {
+        clearInterval(this.autoRefresh);
+      }
+      
       this.autoRefresh = setInterval(() => {
-        console.log('🔄 Auto-refreshing metrics...');
         this.fetchHealthMetrics();
-      }, 30000);
+      }, 30000); // Refresh every 30 seconds
     },
-    
+
     stopAutoRefresh() {
       if (this.autoRefresh) {
         clearInterval(this.autoRefresh);
         this.autoRefresh = null;
       }
+    },
+
+    // Cleanup method for component unmount
+    destroy() {
+      this.stopAutoRefresh();
+    },
+
+    // Alias for fetchHealthMetrics - for compatibility with components
+    async fetchHealthData() {
+      return await this.fetchHealthMetrics();
     },
   },
   

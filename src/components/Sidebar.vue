@@ -1,9 +1,11 @@
 <script setup>
 import { ref } from 'vue';
-import { LayoutDashboard, ShieldAlert, Activity, BarChart, Settings, LifeBuoy } from 'lucide-vue-next';
+import { LayoutDashboard, Cpu, Brain, ShieldAlert, Activity, BarChart, Settings, LifeBuoy } from 'lucide-vue-next';
 
 const menuItems = ref([
   { name: 'Dashboard', icon: LayoutDashboard, path: '/' },
+  { name: 'AI Operations', icon: Brain, path: '/ai-ops' },
+  { name: 'Intelligent Insights', icon: Cpu, path: '/insights' },
   { name: 'Incidents', icon: ShieldAlert, path: '/incidents' },
   { name: 'System Health', icon: Activity, path: '/health' },
   { name: 'Reports', icon: BarChart, path: '/reports' },

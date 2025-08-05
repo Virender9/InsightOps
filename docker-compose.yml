@@ -1,0 +1,163 @@
+version: '3.8'
+
+services:
+  # InsightOps Dashboard Application
+  insightops-dashboard:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: production
+    container_name: insightops-dashboard
+    ports:
+      - "3000:8080"
+    environment:
+      # API Configuration
+      VUE_APP_USE_MOCK_DATA: "true"
+      
+      # TODO: Configure these when real APIs are available
+      # VUE_APP_HELIX_API_URL: "https://helix-console-api.example.com"
+      # VUE_APP_HELIX_API_KEY: "${HELIX_API_KEY}"
+      # VUE_APP_SWIFT_API_URL: "https://swift-console-api.example.com"  
+      # VUE_APP_SWIFT_API_KEY: "${SWIFT_API_KEY}"
+      # VUE_APP_AZURE_OPENAI_ENDPOINT: "${AZURE_OPENAI_ENDPOINT}"
+      # VUE_APP_AZURE_OPENAI_KEY: "${AZURE_OPENAI_KEY}"
+      
+      # ML Backend Configuration
+      VUE_APP_ML_BACKEND_URL: "http://ml-backend:8000"
+      VUE_APP_ML_API_KEY: "${ML_API_KEY:-mock_ml_key}"
+      
+      # Feature Flags
+      VUE_APP_ENABLE_AI_FEATURES: "true"
+      VUE_APP_ENABLE_ML_DETECTION: "true"
+      VUE_APP_ENABLE_REAL_TIME_UPDATES: "true"
+      
+      # Performance
+      VUE_APP_REFRESH_INTERVAL: "30000"
+      INJECT_ENV_VARS: "true"
+    depends_on:
+      - mock-api
+    networks:
+      - insightops-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.dashboard.rule=Host(`dashboard.insightops.local`)"
+      - "traefik.http.services.dashboard.loadbalancer.server.port=8080"
+
+  # Mock API Server (JSON Server)
+  mock-api:
+    image: node:18-alpine
+    container_name: insightops-mock-api
+    working_dir: /app
+    command: sh -c "npm install -g json-server && json-server --watch /app/db.json --host 0.0.0.0 --port 4000"
+    ports:
+      - "4000:4000"
+    volumes:
+      - ./db.json:/app/db.json:ro
+    networks:
+      - insightops-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:4000/alerts"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # ML Backend (Python/FastAPI) - TODO: Implement when ML backend is ready
+  # ml-backend:
+  #   build:
+  #     context: ./ml-backend
+  #     dockerfile: Dockerfile
+  #   container_name: insightops-ml-backend
+  #   ports:
+  #     - "8000:8000"
+  #   environment:
+  #     - PYTHONPATH=/app
+  #     - ML_MODEL_PATH=/app/models
+  #     - API_KEY=${ML_API_KEY:-mock_ml_key}
+  #   volumes:
+  #     - ml_models:/app/models
+  #   networks:
+  #     - insightops-network
+  #   restart: unless-stopped
+  #   healthcheck:
+  #     test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+  #     interval: 30s
+  #     timeout: 10s
+  #     retries: 3
+
+  # Redis for caching and session management
+  redis:
+    image: redis:7-alpine
+    container_name: insightops-redis
+    ports:
+      - "6379:6379"
+    command: redis-server --appendonly yes --requirepass ${REDIS_PASSWORD:-insightops123}
+    volumes:
+      - redis_data:/data
+    networks:
+      - insightops-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "redis-cli", "--raw", "incr", "ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Prometheus for metrics collection (optional)
+  # prometheus:
+  #   image: prom/prometheus:latest
+  #   container_name: insightops-prometheus
+  #   ports:
+  #     - "9090:9090"
+  #   volumes:
+  #     - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+  #     - prometheus_data:/prometheus
+  #   command:
+  #     - '--config.file=/etc/prometheus/prometheus.yml'
+  #     - '--storage.tsdb.path=/prometheus'
+  #     - '--web.console.libraries=/etc/prometheus/console_libraries'
+  #     - '--web.console.templates=/etc/prometheus/consoles'
+  #     - '--web.enable-lifecycle'
+  #   networks:
+  #     - insightops-network
+  #   restart: unless-stopped
+
+  # Grafana for monitoring dashboards (optional)
+  # grafana:
+  #   image: grafana/grafana:latest
+  #   container_name: insightops-grafana
+  #   ports:
+  #     - "3001:3000"
+  #   environment:
+  #     - GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_PASSWORD:-admin123}
+  #     - GF_USERS_ALLOW_SIGN_UP=false
+  #   volumes:
+  #     - grafana_data:/var/lib/grafana
+  #     - ./monitoring/grafana/dashboards:/etc/grafana/provisioning/dashboards
+  #   networks:
+  #     - insightops-network
+  #   restart: unless-stopped
+
+# Networks
+networks:
+  insightops-network:
+    driver: bridge
+    name: insightops-network
+
+# Volumes
+volumes:
+  redis_data:
+    driver: local
+  # ml_models:
+  #   driver: local
+  # prometheus_data:
+  #   driver: local  
+  # grafana_data:
+  #   driver: local

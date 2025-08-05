@@ -1,6 +1,6 @@
 <script setup>
 import { watch } from 'vue';
-import { useAiStore } from '@/stores/ai';
+import { useAIStore } from '@/stores/ai';
 import { storeToRefs } from 'pinia';
 import { X, LoaderCircle, AlertTriangle } from 'lucide-vue-next';
 
@@ -17,7 +17,7 @@ const props = defineProps({
 
 const emit = defineEmits(['close']);
 
-const aiStore = useAiStore();
+const aiStore = useAIStore();
 const { analysis, loading: aiLoading, error: aiError } = storeToRefs(aiStore);
 
 watch(() => props.show, (newVal) => {
